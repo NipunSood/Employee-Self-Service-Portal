@@ -2,7 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/NipunSood/Employee-Self-Service-Portal/src/model"
@@ -33,6 +32,25 @@ func RegisterRouters() *gin.Engine {
 				"TimesOff": timesOff,
 			})
 
+	})
+
+	r.POST("/employees/:id/vacation/new", func(c *gin.Context) {
+		var timeOff model.TimeOff
+		err := c.BindJSON(&timeOff)
+
+		if err != nil {
+			c.String(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		id := c.Param("id")
+
+		timesOff, ok := model.TimesOff[id]
+		if !ok {
+			model.TimesOff[id] = []model.TimeOff{}
+		}
+
+		model.TimesOff[id] = append(timesOff, timeOff)
 	})
 
 	admin := r.Group("/admin", gin.BasicAuth(gin.Accounts{
@@ -67,11 +85,6 @@ func RegisterRouters() *gin.Engine {
 	admin.POST("/employees/:id", func(c *gin.Context) {
 		id := c.Param("id")
 		if id == "add" {
-			pto, err := strconv.ParseFloat(c.PostForm("pto"), 32)
-			if err != nil {
-				c.String(http.StatusBadRequest, err.Error())
-				return
-			}
 
 			startDate, err := time.Parse("2006-01-02", c.PostForm("startDate"))
 			if err != nil {
@@ -80,12 +93,13 @@ func RegisterRouters() *gin.Engine {
 			}
 
 			var emp model.Employee
+			err = c.Bind(&emp)
+			if err != nil {
+				c.String(http.StatusBadRequest, err.Error())
+				return
+			}
 			emp.ID = 42
-			emp.FirstName = c.PostForm("firstName")
-			emp.LastName = c.PostForm("lastName")
-			emp.Position = c.PostForm("position")
 			emp.Status = "Active"
-			emp.TotalPTO = float32(pto)
 			emp.StartDate = startDate
 			model.Employees["42"] = emp
 

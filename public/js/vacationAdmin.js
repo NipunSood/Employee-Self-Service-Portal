@@ -14,6 +14,9 @@
         status: 'new'
       };
 
+      var xhr = new XMLHttpRequest();
+      xhr.open("post", location.pathname+ "/new");
+      xhr.send(JSON.stringify(payload));
       rowData.row.parentElement.removeChild(rowData.row);
 
     }, false);

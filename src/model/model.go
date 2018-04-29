@@ -62,18 +62,18 @@ var TimesOff = map[string][]TimeOff{
 
 type Employee struct {
 	ID        uint
-	FirstName string
-	LastName  string
+	FirstName string `form:"firstName"`
+	LastName  string `form:"lastName"`
 	StartDate time.Time
-	Position  string
-	TotalPTO  float32
+	Position  string  `form:"position"`
+	TotalPTO  float32 `form:"pto"`
 	Status    string
 	TimesOff  []TimeOff
 }
 
 type TimeOff struct {
-	Type      string
-	Amount    float32
-	StartDate time.Time
-	Status    string
+	Type      string    `json:"reason"`
+	Amount    float32   `json:"hours"`
+	StartDate time.Time `json:"startDate"`
+	Status    string    `json:"status"`
 }
