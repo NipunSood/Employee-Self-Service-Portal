@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-var employees = map[string]Employee{
+var Employees = map[string]Employee{
 	"962134": Employee{
 		ID:        962134,
 		FirstName: "Jennifer",
