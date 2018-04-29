@@ -72,8 +72,8 @@ type Employee struct {
 }
 
 type TimeOff struct {
-	Type      string    `json:"reason"`
-	Amount    float32   `json:"hours"`
-	StartDate time.Time `json:"startDate"`
-	Status    string    `json:"status"`
+	Type      string    `json:"reason" binding:"required"`
+	Amount    float32   `json:"hours" binding:"required, gt=0"`
+	StartDate time.Time `json:"startDate" binding:"required"`
+	Status    string    `json:"status" bindling:"required"`
 }
