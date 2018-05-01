@@ -28,7 +28,7 @@ func RegisterRouters() *gin.Engine {
 			return
 		}
 		c.HTML(http.StatusOK, "vacation-overview.html",
-			map[string]interface{}{
+			gin.H{
 				"TimesOff": timesOff,
 			})
 
@@ -58,7 +58,7 @@ func RegisterRouters() *gin.Engine {
 	}))
 	admin.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "admin-overview.html",
-			map[string]interface{}{
+			gin.H{
 				"Employees": model.Employees,
 			})
 	})
@@ -77,7 +77,7 @@ func RegisterRouters() *gin.Engine {
 		}
 
 		c.HTML(http.StatusOK, "admin-employee-edit.html",
-			map[string]interface{}{
+			gin.H{
 				"Employee": employee,
 			})
 	})
