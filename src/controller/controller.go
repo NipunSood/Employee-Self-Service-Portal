@@ -4,18 +4,39 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/NipunSood/Employee-Self-Service-Portal/src/loginMiddleware"
 	"github.com/NipunSood/Employee-Self-Service-Portal/src/model"
 	"github.com/gin-gonic/gin"
 )
 
 func RegisterRouters() *gin.Engine {
 	r := gin.Default()
+	r.Use(loginMiddleware.LoginMiddleware)
 	r.LoadHTMLGlob("templates/**/*.html")
-	r.GET("/", func(c *gin.Context) {
+	r.Any("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
 
-	r.GET("/login", func(c *gin.Context) {
+	r.Any("/login", func(c *gin.Context) {
+		employeeNumber := c.PostForm("employeeNumber")
+		password := c.PostForm("password")
+
+		for _, identity := range loginMiddleware.Identities {
+			if identity.EmployeeNumber == employeeNumber &&
+				identity.Password == password {
+				lc := loginMiddleware.LoginCookie{
+					Value:      employeeNumber,
+					Expiration: time.Now().Add(24 * time.Hour),
+					Origin:     c.Request.RemoteAddr,
+				}
+				loginMiddleware.LoginCookies[lc.Value] = &lc
+				maxAge := lc.Expiration.Unix() - time.Now().Unix()
+				c.SetCookie(loginMiddleware.LoginCookieName, lc.Value, int(maxAge), "", "", false, true)
+
+				c.Redirect(http.StatusTemporaryRedirect, "/")
+				return
+			}
+		}
 		c.HTML(http.StatusOK, "login.html", nil)
 	})
 
