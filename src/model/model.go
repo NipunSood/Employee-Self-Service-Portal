@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-var employees = map[string]Employee{
+var Employees = map[string]Employee{
 	"962134": Employee{
 		ID:        962134,
 		FirstName: "Jennifer",
@@ -62,18 +62,18 @@ var TimesOff = map[string][]TimeOff{
 
 type Employee struct {
 	ID        uint
-	FirstName string
-	LastName  string
+	FirstName string `form:"firstName"`
+	LastName  string `form:"lastName"`
 	StartDate time.Time
-	Position  string
-	TotalPTO  float32
+	Position  string  `form:"position"`
+	TotalPTO  float32 `form:"pto"`
 	Status    string
 	TimesOff  []TimeOff
 }
 
 type TimeOff struct {
-	Type      string
-	Amount    float32
-	StartDate time.Time
-	Status    string
+	Type      string    `json:"reason" binding:"required"`
+	Amount    float32   `json:"hours" binding:"required, gt=0"`
+	StartDate time.Time `json:"startDate" binding:"required"`
+	Status    string    `json:"status" bindling:"required"`
 }

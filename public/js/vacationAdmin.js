@@ -8,11 +8,15 @@
       rowData.actionButton.removeEventListener('click', save);
 
       var payload = {
-        startDate: rowData.startDate.value,
+        startDate: new Date(rowData.startDate.value),
         hours: parseFloat(rowData.hours.value) || 0,
         reason: rowData.reasons.value,
         status: 'new'
       };
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("post", location.pathname + "/new");
+      xhr.send(JSON.stringify(payload));
 
       rowData.row.parentElement.removeChild(rowData.row);
 
